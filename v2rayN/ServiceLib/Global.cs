@@ -325,26 +325,6 @@ public class Global
         "httpupgrade"
     ];
 
-    public static readonly List<string> KcpHeaderTypes =
-    [
-        "srtp",
-        "utp",
-        "wechat-video",
-        "dtls",
-        "wireguard",
-        "dns"
-    ];
-
-    public static readonly Dictionary<string, string> KcpHeaderMaskMap = new()
-    {
-        { "srtp", "srtp" },
-        { "utp", "utp" },
-        { "wechat-video", "wechat" },
-        { "dtls", "dtls" },
-        { "wireguard", "wireguard" },
-        { "dns", "dns" }
-    };
-
     public static readonly List<string> CoreTypes =
     [
         "Xray",

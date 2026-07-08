@@ -383,6 +383,11 @@ public sealed class AppManager
                     {
                         item.Network = nameof(ETransport.raw);
                     }
+                    if (item.Network == "kcp")
+                    {
+                        Logging.SaveLog("MigrateProfileTransportV3ToV4 skipped unsupported legacy kcp transport. Xray-core 26.3.27 profiles must use mkcp without headerType or seed.");
+                        continue;
+                    }
                     var transport = item.GetTransportExtra();
                     var network = item.GetNetwork();
 
@@ -423,10 +428,6 @@ public sealed class AppManager
                                 GrpcServiceName = item.Path.NullIfEmpty(),
                                 GrpcMode = item.HeaderType.NullIfEmpty(),
                             };
-                            break;
-
-                        case nameof(ETransport.kcp):
-                            item.Network = nameof(ETransport.mkcp);
                             break;
 
                         default:

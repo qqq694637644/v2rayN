@@ -265,13 +265,18 @@ public class BaseFmt
         {
             net = nameof(ETransport.raw);
         }
-        else if (net == nameof(ETransport.kcp))
+        else if (net == "kcp")
         {
-            net = nameof(ETransport.mkcp);
+            throw new InvalidOperationException("Legacy kcp transport is not supported by this Xray-core 26.3.27 profile. Use mkcp without headerType or seed.");
         }
         if (!Global.Networks.Contains(net))
         {
             net = nameof(ETransport.raw);
+        }
+        if (net == nameof(ETransport.mkcp)
+            && (HasQueryKey(query, "headerType") || HasQueryKey(query, "seed") || HasQueryKey(query, "host") || HasQueryKey(query, "path")))
+        {
+            throw new InvalidOperationException("mkcp no longer accepts legacy headerType, seed, host, or path fields.");
         }
 
         item.Network = net;
@@ -378,5 +383,10 @@ public class BaseFmt
     protected static string GetQueryDecoded(NameValueCollection query, string key, string defaultValue = "")
     {
         return Utils.UrlDecode(GetQueryValue(query, key, defaultValue));
+    }
+
+    private static bool HasQueryKey(NameValueCollection query, string key)
+    {
+        return query.AllKeys.Any(k => string.Equals(k, key, StringComparison.OrdinalIgnoreCase));
     }
 }

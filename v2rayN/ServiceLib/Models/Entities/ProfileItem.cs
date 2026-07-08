@@ -52,10 +52,6 @@ public class ProfileItem
 
     public string GetNetwork()
     {
-        if (Network == nameof(ETransport.kcp))
-        {
-            return nameof(ETransport.mkcp);
-        }
         if (Network.IsNullOrEmpty() || !Global.Networks.Contains(Network))
         {
             return Global.DefaultNetwork;
@@ -174,13 +170,13 @@ public class ProfileItem
     public string Username { get; set; }
     public string Network { get; set; }
 
-    [Obsolete("Use TransportExtra.RawHeaderType/XhttpMode/GrpcMode/KcpHeaderType instead.")]
+    [Obsolete("Use TransportExtra.RawHeaderType/XhttpMode/GrpcMode instead.")]
     public string HeaderType { get; set; }
 
     [Obsolete("Use TransportExtra.Host/GrpcAuthority instead.")]
     public string RequestHost { get; set; }
 
-    [Obsolete("Use TransportExtra.Path/GrpcServiceName/KcpSeed instead.")]
+    [Obsolete("Use TransportExtra.Path/GrpcServiceName instead.")]
     public string Path { get; set; }
 
     public string StreamSecurity { get; set; }

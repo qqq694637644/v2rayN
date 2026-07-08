@@ -1219,8 +1219,6 @@ public static class ConfigHandler
                && AreEqual(oTransport.GrpcAuthority, nTransport.GrpcAuthority)
                && AreEqual(oTransport.GrpcServiceName, nTransport.GrpcServiceName)
                && AreEqual(oTransport.GrpcMode, nTransport.GrpcMode)
-               && AreEqual(oTransport.KcpHeaderType, nTransport.KcpHeaderType)
-               && AreEqual(oTransport.KcpSeed, nTransport.KcpSeed)
                && (o.ConfigType == EConfigType.Trojan || o.StreamSecurity == n.StreamSecurity)
                && AreEqual(oProtocolExtra.Flow, nProtocolExtra.Flow)
                && AreEqual(oProtocolExtra.SalamanderPass, nProtocolExtra.SalamanderPass)

@@ -40,6 +40,7 @@ public class VmessFmt : BaseFmt
                 nameof(ETransport.raw) => item.GetTransportExtra().RawHeaderType,
                 nameof(ETransport.xhttp) => item.GetTransportExtra().XhttpMode,
                 nameof(ETransport.grpc) => item.GetTransportExtra().GrpcMode,
+                nameof(ETransport.mkcp) => null,
                 _ => Global.None,
             },
             host = item.GetNetwork() switch
@@ -112,12 +113,23 @@ public class VmessFmt : BaseFmt
         });
         if (vmessQRCode.net.IsNotEmpty())
         {
+            if (vmessQRCode.net == "kcp")
+            {
+                msg = "Legacy kcp transport is not supported by this Xray-core 26.3.27 profile. Use mkcp without headerType or seed.";
+                return null;
+            }
+
             item.Network = vmessQRCode.net switch
             {
                 Global.RawNetworkAlias => nameof(ETransport.raw),
-                nameof(ETransport.kcp) => nameof(ETransport.mkcp),
                 _ => vmessQRCode.net,
             };
+        }
+        if (item.Network == nameof(ETransport.mkcp)
+            && (vmessQRCode.type.IsNotEmpty() || vmessQRCode.host.IsNotEmpty() || vmessQRCode.path.IsNotEmpty()))
+        {
+            msg = "mkcp no longer accepts legacy VMess type, host, or path fields.";
+            return null;
         }
         if (vmessQRCode.type.IsNotEmpty())
         {

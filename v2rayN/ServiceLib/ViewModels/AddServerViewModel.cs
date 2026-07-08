@@ -114,12 +114,6 @@ public class AddServerViewModel : MyReactiveObject
     public string GrpcMode { get; set; }
 
     [Reactive]
-    public string KcpHeaderType { get; set; }
-
-    [Reactive]
-    public string KcpSeed { get; set; }
-
-    [Reactive]
     public int? KcpMtu { get; set; }
 
     public string TransportHeaderType
@@ -275,10 +269,6 @@ public class AddServerViewModel : MyReactiveObject
             SelectedSource = JsonUtils.DeepCopy(profileItem);
         }
         CoreType = SelectedSource?.CoreType?.ToString();
-        if (SelectedSource?.Network == nameof(ETransport.kcp))
-        {
-            SelectedSource.Network = nameof(ETransport.mkcp);
-        }
         AllowInsecure = SelectedSource?.GetAllowInsecure() == true;
         MuxEnabled = SelectedSource?.MuxEnabled == true;
         Cert = SelectedSource?.Cert ?? string.Empty;
@@ -317,8 +307,6 @@ public class AddServerViewModel : MyReactiveObject
         GrpcAuthority = transport.GrpcAuthority ?? string.Empty;
         GrpcServiceName = transport.GrpcServiceName ?? string.Empty;
         GrpcMode = transport.GrpcMode.IsNullOrEmpty() ? Global.GrpcGunMode : transport.GrpcMode;
-        KcpHeaderType = transport.KcpHeaderType.IsNullOrEmpty() ? Global.None : transport.KcpHeaderType;
-        KcpSeed = transport.KcpSeed ?? string.Empty;
         KcpMtu = transport.KcpMtu;
     }
 
@@ -374,10 +362,6 @@ public class AddServerViewModel : MyReactiveObject
             }
         }
         SelectedSource.CoreType = CoreType.IsNullOrEmpty() ? null : Enum.Parse<ECoreType>(CoreType);
-        if (SelectedSource.Network == nameof(ETransport.kcp))
-        {
-            SelectedSource.Network = nameof(ETransport.mkcp);
-        }
         SelectedSource.AllowInsecure = AllowInsecure ? Global.StringTrue : Global.StringFalse;
         SelectedSource.MuxEnabled = MuxEnabled;
         SelectedSource.Cert = Cert.IsNullOrEmpty() ? string.Empty : Cert;
@@ -397,8 +381,6 @@ public class AddServerViewModel : MyReactiveObject
             GrpcAuthority = GrpcAuthority.NullIfEmpty(),
             GrpcServiceName = GrpcServiceName.NullIfEmpty(),
             GrpcMode = GrpcMode.NullIfEmpty(),
-            KcpHeaderType = null,
-            KcpSeed = null,
             KcpMtu = KcpMtu > 0 ? KcpMtu : null,
         };
 

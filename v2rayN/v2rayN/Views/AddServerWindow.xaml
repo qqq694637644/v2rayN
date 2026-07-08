@@ -1156,28 +1156,9 @@
                             </Grid.ColumnDefinitions>
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
                             </Grid.RowDefinitions>
                             <TextBlock
                                 Grid.Row="0"
-                                Grid.Column="0"
-                                Margin="{StaticResource Margin4}"
-                                VerticalAlignment="Center"
-                                Visibility="Collapsed"
-                                Style="{StaticResource ToolbarTextBlock}"
-                                Text="{x:Static resx:ResUI.TransportHeaderType2}" />
-                            <ComboBox
-                                x:Name="cmbHeaderTypeKcp"
-                                Grid.Row="0"
-                                Grid.Column="1"
-                                Width="200"
-                                Margin="{StaticResource Margin4}"
-                                HorizontalAlignment="Left"
-                                Visibility="Collapsed"
-                                Style="{StaticResource DefComboBox}" />
-                            <TextBlock
-                                Grid.Row="1"
                                 Grid.Column="0"
                                 Margin="{StaticResource Margin4}"
                                 VerticalAlignment="Center"
@@ -1185,28 +1166,11 @@
                                 Text="{x:Static resx:ResUI.TbMtu}" />
                             <TextBox
                                 x:Name="txtKcpMtu"
-                                Grid.Row="1"
+                                Grid.Row="0"
                                 Grid.Column="1"
                                 Width="200"
                                 Margin="{StaticResource Margin4}"
                                 HorizontalAlignment="Left"
-                                Style="{StaticResource DefTextBox}" />
-                            <TextBlock
-                                Grid.Row="2"
-                                Grid.Column="0"
-                                Margin="{StaticResource Margin4}"
-                                VerticalAlignment="Center"
-                                Visibility="Collapsed"
-                                Style="{StaticResource ToolbarTextBlock}"
-                                Text="Seed" />
-                            <TextBox
-                                x:Name="txtKcpSeed"
-                                Grid.Row="2"
-                                Grid.Column="1"
-                                Width="400"
-                                Margin="{StaticResource Margin4}"
-                                HorizontalAlignment="Left"
-                                Visibility="Collapsed"
                                 Style="{StaticResource DefTextBox}" />
                         </Grid>
 
