@@ -1158,6 +1158,11 @@
                                 <RowDefinition Height="Auto" />
                                 <RowDefinition Height="Auto" />
                                 <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
                             </Grid.RowDefinitions>
                             <TextBlock
                                 Grid.Row="0"
@@ -1165,44 +1170,29 @@
                                 Margin="{StaticResource Margin4}"
                                 VerticalAlignment="Center"
                                 Style="{StaticResource ToolbarTextBlock}"
-                                Text="{x:Static resx:ResUI.TbHeaderType8}" />
-                            <ComboBox
-                                x:Name="cmbHeaderTypeKcp"
+                                Text="{x:Static resx:ResUI.TbMtu}" />
+                            <TextBox
+                                x:Name="txtKcpMtu"
                                 Grid.Row="0"
                                 Grid.Column="1"
                                 Width="200"
                                 Margin="{StaticResource Margin4}"
-                                Style="{StaticResource DefComboBox}" />
-                            <TextBlock
-                                Grid.Row="1"
-                                Grid.Column="0"
-                                Margin="{StaticResource Margin4}"
-                                VerticalAlignment="Center"
-                                Style="{StaticResource ToolbarTextBlock}"
-                                Text="{x:Static resx:ResUI.TbMtu}" />
-                            <TextBox
-                                x:Name="txtKcpMtu"
-                                Grid.Row="1"
-                                Grid.Column="1"
-                                Width="200"
-                                Margin="{StaticResource Margin4}"
                                 HorizontalAlignment="Left"
                                 Style="{StaticResource DefTextBox}" />
-                            <TextBlock
-                                Grid.Row="2"
-                                Grid.Column="0"
-                                Margin="{StaticResource Margin4}"
-                                VerticalAlignment="Center"
-                                Style="{StaticResource ToolbarTextBlock}"
-                                Text="seed" />
-                            <TextBox
-                                x:Name="txtKcpSeed"
-                                Grid.Row="2"
-                                Grid.Column="1"
-                                Width="400"
-                                Margin="{StaticResource Margin4}"
-                                HorizontalAlignment="Left"
-                                Style="{StaticResource DefTextBox}" />
+                            <TextBlock Grid.Row="1" Grid.Column="0" Margin="{StaticResource Margin4}" VerticalAlignment="Center" Style="{StaticResource ToolbarTextBlock}" Text="tti (ms)" />
+                            <TextBox x:Name="txtKcpTti" Grid.Row="1" Grid.Column="1" Width="200" Margin="{StaticResource Margin4}" HorizontalAlignment="Left" Style="{StaticResource DefTextBox}" />
+                            <TextBlock Grid.Row="2" Grid.Column="0" Margin="{StaticResource Margin4}" VerticalAlignment="Center" Style="{StaticResource ToolbarTextBlock}" Text="uplinkCapacity (MB/s)" />
+                            <TextBox x:Name="txtKcpUplinkCapacity" Grid.Row="2" Grid.Column="1" Width="200" Margin="{StaticResource Margin4}" HorizontalAlignment="Left" Style="{StaticResource DefTextBox}" />
+                            <TextBlock Grid.Row="3" Grid.Column="0" Margin="{StaticResource Margin4}" VerticalAlignment="Center" Style="{StaticResource ToolbarTextBlock}" Text="downlinkCapacity (MB/s)" />
+                            <TextBox x:Name="txtKcpDownlinkCapacity" Grid.Row="3" Grid.Column="1" Width="200" Margin="{StaticResource Margin4}" HorizontalAlignment="Left" Style="{StaticResource DefTextBox}" />
+                            <TextBlock Grid.Row="4" Grid.Column="0" Margin="{StaticResource Margin4}" VerticalAlignment="Center" Style="{StaticResource ToolbarTextBlock}" Text="congestion" />
+                            <ToggleButton x:Name="togKcpCongestion" Grid.Row="4" Grid.Column="1" Margin="{StaticResource Margin4}" HorizontalAlignment="Left" />
+                            <TextBlock Grid.Row="5" Grid.Column="0" Margin="{StaticResource Margin4}" VerticalAlignment="Center" Style="{StaticResource ToolbarTextBlock}" Text="readBufferSize (MB)" />
+                            <TextBox x:Name="txtKcpReadBufferSize" Grid.Row="5" Grid.Column="1" Width="200" Margin="{StaticResource Margin4}" HorizontalAlignment="Left" Style="{StaticResource DefTextBox}" />
+                            <TextBlock Grid.Row="6" Grid.Column="0" Margin="{StaticResource Margin4}" VerticalAlignment="Center" Style="{StaticResource ToolbarTextBlock}" Text="writeBufferSize (MB)" />
+                            <TextBox x:Name="txtKcpWriteBufferSize" Grid.Row="6" Grid.Column="1" Width="200" Margin="{StaticResource Margin4}" HorizontalAlignment="Left" Style="{StaticResource DefTextBox}" />
+                            <TextBlock Grid.Row="7" Grid.Column="0" Margin="{StaticResource Margin4}" VerticalAlignment="Center" Style="{StaticResource ToolbarTextBlock}" Text="FinalMask UDP header" />
+                            <ComboBox x:Name="cmbKcpFinalMaskType" Grid.Row="7" Grid.Column="1" Width="220" Margin="{StaticResource Margin4}" Style="{StaticResource DefComboBox}" />
                         </Grid>
 
                         <Grid x:Name="gridTransportGrpc" Visibility="Collapsed">

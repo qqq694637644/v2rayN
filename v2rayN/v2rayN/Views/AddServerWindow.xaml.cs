@@ -26,10 +26,9 @@ public partial class AddServerWindow
         }
 
         cmbHeaderTypeRaw.ItemsSource = new List<string> { Global.None, Global.RawHeaderHttp };
-        cmbHeaderTypeKcp.ItemsSource = new List<string> { Global.None, "srtp", "utp", "wechat-video", "dtls", "wireguard" };
-
         cmbHeaderTypeXhttp.ItemsSource = Global.XhttpMode;
         cmbHeaderTypeGrpc.ItemsSource = new List<string> { Global.GrpcGunMode, Global.GrpcMultiMode };
+        cmbKcpFinalMaskType.ItemsSource = new List<string> { Global.None, "header-srtp", "header-utp", "header-wechat", "header-dtls", "header-wireguard" };
 
         cmbFingerprint.ItemsSource = Global.Fingerprints;
         cmbFingerprint2.ItemsSource = Global.Fingerprints;
@@ -208,8 +207,13 @@ public partial class AddServerWindow
             this.Bind(ViewModel, vm => vm.Path, v => v.txtPathRaw.Text).DisposeWith(disposables);
 
             this.Bind(ViewModel, vm => vm.KcpMtu, v => v.txtKcpMtu.Text).DisposeWith(disposables);
-            this.Bind(ViewModel, vm => vm.KcpHeaderType, v => v.cmbHeaderTypeKcp.Text).DisposeWith(disposables);
-            this.Bind(ViewModel, vm => vm.KcpSeed, v => v.txtKcpSeed.Text).DisposeWith(disposables);
+            this.Bind(ViewModel, vm => vm.KcpTti, v => v.txtKcpTti.Text).DisposeWith(disposables);
+            this.Bind(ViewModel, vm => vm.KcpUplinkCapacity, v => v.txtKcpUplinkCapacity.Text).DisposeWith(disposables);
+            this.Bind(ViewModel, vm => vm.KcpDownlinkCapacity, v => v.txtKcpDownlinkCapacity.Text).DisposeWith(disposables);
+            this.Bind(ViewModel, vm => vm.KcpCongestion, v => v.togKcpCongestion.IsChecked).DisposeWith(disposables);
+            this.Bind(ViewModel, vm => vm.KcpReadBufferSize, v => v.txtKcpReadBufferSize.Text).DisposeWith(disposables);
+            this.Bind(ViewModel, vm => vm.KcpWriteBufferSize, v => v.txtKcpWriteBufferSize.Text).DisposeWith(disposables);
+            this.Bind(ViewModel, vm => vm.KcpFinalMaskType, v => v.cmbKcpFinalMaskType.Text).DisposeWith(disposables);
 
             this.Bind(ViewModel, vm => vm.Host, v => v.txtRequestHostWs.Text).DisposeWith(disposables);
             this.Bind(ViewModel, vm => vm.Path, v => v.txtPathWs.Text).DisposeWith(disposables);
@@ -323,6 +327,7 @@ public partial class AddServerWindow
         gridTransportHttpupgrade.Visibility = Visibility.Collapsed;
         gridTransportXhttp.Visibility = Visibility.Collapsed;
         gridTransportGrpc.Visibility = Visibility.Collapsed;
+        gridFinalmask.Visibility = network == nameof(ETransport.mkcp) ? Visibility.Collapsed : Visibility.Visible;
 
         switch (network)
         {
