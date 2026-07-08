@@ -27,6 +27,7 @@ public partial class AddServerWindow : WindowBase<AddServerViewModel>
         cmbNetwork.ItemsSource = Global.Networks;
 
         cmbHeaderTypeRaw.ItemsSource = new List<string> { Global.None, Global.RawHeaderHttp };
+        cmbHeaderTypeKcp.ItemsSource = new List<string> { Global.None, "srtp", "utp", "wechat-video", "dtls", "wireguard" };
 
         cmbHeaderTypeXhttp.ItemsSource = Global.XhttpMode;
         cmbHeaderTypeGrpc.ItemsSource = new List<string> { Global.GrpcGunMode, Global.GrpcMultiMode };
@@ -209,6 +210,8 @@ public partial class AddServerWindow : WindowBase<AddServerViewModel>
             this.Bind(ViewModel, vm => vm.Path, v => v.txtPathRaw.Text).DisposeWith(disposables);
 
             this.Bind(ViewModel, vm => vm.KcpMtu, v => v.txtKcpMtu.Text).DisposeWith(disposables);
+            this.Bind(ViewModel, vm => vm.KcpHeaderType, v => v.cmbHeaderTypeKcp.SelectedValue).DisposeWith(disposables);
+            this.Bind(ViewModel, vm => vm.KcpSeed, v => v.txtKcpSeed.Text).DisposeWith(disposables);
 
             this.Bind(ViewModel, vm => vm.Host, v => v.txtRequestHostWs.Text).DisposeWith(disposables);
             this.Bind(ViewModel, vm => vm.Path, v => v.txtPathWs.Text).DisposeWith(disposables);
