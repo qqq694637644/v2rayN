@@ -119,14 +119,6 @@ public class BaseFmt
                 break;
 
             case nameof(ETransport.mkcp):
-                if (transport.KcpHeaderType.IsNotEmpty() && transport.KcpHeaderType != Global.None)
-                {
-                    dicQuery.Add("headerType", transport.KcpHeaderType);
-                }
-                if (transport.KcpSeed.IsNotEmpty())
-                {
-                    dicQuery.Add("seed", UrlEncodeSafe(transport.KcpSeed));
-                }
                 if (transport.KcpMtu > 0)
                 {
                     dicQuery.Add("mtu", transport.KcpMtu.ToString());
@@ -298,8 +290,6 @@ public class BaseFmt
                 var kcpMtu = int.TryParse(kcpMtuStr, out var mtu) ? mtu : 0;
                 transport = transport with
                 {
-                    KcpHeaderType = GetQueryValue(query, "headerType", Global.None),
-                    KcpSeed = GetQueryDecoded(query, "seed"),
                     KcpMtu = kcpMtu > 0 ? mtu : null,
                 };
                 break;
