@@ -377,16 +377,16 @@ public sealed class AppManager
             var updateProfileItems = new List<ProfileItem>();
             foreach (var item in batch)
             {
+                if (item.Network == "kcp")
+                {
+                    throw new InvalidOperationException($"Profile {item.IndexId} ({item.Remarks}) uses unsupported legacy kcp transport. Xray-core 26.3.27 profiles must use mkcp without headerType or seed.");
+                }
+
                 try
                 {
                     if (item.Network == Global.RawNetworkAlias)
                     {
                         item.Network = nameof(ETransport.raw);
-                    }
-                    if (item.Network == "kcp")
-                    {
-                        Logging.SaveLog("MigrateProfileTransportV3ToV4 skipped unsupported legacy kcp transport. Xray-core 26.3.27 profiles must use mkcp without headerType or seed.");
-                        continue;
                     }
                     var transport = item.GetTransportExtra();
                     var network = item.GetNetwork();
@@ -431,13 +431,7 @@ public sealed class AppManager
                             break;
 
                         default:
-                            item.Network = Global.DefaultNetwork;
-                            transport = transport with
-                            {
-                                RawHeaderType = item.HeaderType.NullIfEmpty(),
-                                Host = item.RequestHost.NullIfEmpty(),
-                            };
-                            break;
+                            throw new InvalidOperationException($"Unsupported transport network: {network}");
                     }
 
                     item.SetTransportExtra(transport);
@@ -447,6 +441,7 @@ public sealed class AppManager
                 catch (Exception ex)
                 {
                     Logging.SaveLog($"MigrateProfileTransportV3ToV4 Error: {ex}");
+                    throw;
                 }
             }
 

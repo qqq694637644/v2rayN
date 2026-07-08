@@ -1153,10 +1153,16 @@ public static class ConfigHandler
             }
         }
 
-        if (profileItem.Network.IsNotEmpty() && !Global.Networks.Contains(profileItem.Network))
+        var network = profileItem.Network.TrimEx();
+        if (network == "kcp")
         {
-            profileItem.Network = Global.DefaultNetwork;
+            throw new InvalidOperationException("Legacy kcp transport is not supported by this Xray-core 26.3.27 profile. Use mkcp without headerType or seed.");
         }
+        if (network.IsNotEmpty() && !Global.Networks.Contains(network))
+        {
+            throw new InvalidOperationException($"Unsupported transport network: {network}");
+        }
+        profileItem.Network = network;
 
         var maxSort = -1;
         if (profileItem.IndexId.IsNullOrEmpty())

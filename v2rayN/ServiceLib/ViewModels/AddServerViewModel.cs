@@ -366,10 +366,18 @@ public class AddServerViewModel : MyReactiveObject
         SelectedSource.MuxEnabled = MuxEnabled;
         SelectedSource.Cert = Cert.IsNullOrEmpty() ? string.Empty : Cert;
         SelectedSource.CertSha = CertSha.IsNullOrEmpty() ? string.Empty : CertSha;
-        if (!Global.Networks.Contains(SelectedSource.Network))
+        var network = SelectedSource.Network.TrimEx();
+        if (network == "kcp")
         {
-            SelectedSource.Network = Global.DefaultNetwork;
+            NoticeManager.Instance.Enqueue("Legacy kcp transport is not supported by this Xray-core 26.3.27 profile. Use mkcp without headerType or seed.");
+            return;
         }
+        if (network.IsNotEmpty() && !Global.Networks.Contains(network))
+        {
+            NoticeManager.Instance.Enqueue($"Unsupported transport network: {network}");
+            return;
+        }
+        SelectedSource.Network = network.IsNullOrEmpty() ? Global.DefaultNetwork : network;
 
         var transport = new TransportExtraItem
         {
