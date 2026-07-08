@@ -1,0 +1,96 @@
+name: Release Windows x64
+
+on:
+  push:
+    tags:
+      - '*'
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Release tag to publish, for example v1.0.0 or test'
+        required: true
+        type: string
+      draft:
+        description: 'Create the GitHub release as a draft'
+        required: false
+        default: false
+        type: boolean
+      prerelease:
+        description: 'Mark the GitHub release as a prerelease'
+        required: false
+        default: false
+        type: boolean
+
+permissions:
+  contents: write
+
+jobs:
+  release-windows-x64:
+    name: Build and publish Windows x64 release
+    runs-on: windows-latest
+
+    env:
+      RID: win-x64
+      PACKAGE_DIR: v2rayN-windows-64
+      PACKAGE_ZIP: v2rayN-windows-64.zip
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+        with:
+          submodules: recursive
+          fetch-depth: 0
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v5.4.0
+        with:
+          dotnet-version: '10.0.1xx'
+
+      - name: Publish v2rayN Windows app
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+
+          dotnet publish './v2rayN/v2rayN/v2rayN.csproj' `
+            -c Release `
+            -r $env:RID `
+            -p:SelfContained=true `
+            -p:EnableWindowsTargeting=true `
+            -o $env:PACKAGE_DIR
+
+          dotnet publish './v2rayN/AmazTool/AmazTool.csproj' `
+            -c Release `
+            -r $env:RID `
+            -p:SelfContained=true `
+            -p:PublishTrimmed=true `
+            -p:EnableWindowsTargeting=true `
+            -o $env:PACKAGE_DIR
+
+      - name: Package with bundled core files
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+
+          Invoke-WebRequest `
+            -Uri 'https://github.com/2dust/v2rayN-core-bin/raw/refs/heads/master/v2rayN-windows-64.zip' `
+            -OutFile $env:PACKAGE_ZIP
+
+          7z a -tZip $env:PACKAGE_ZIP $env:PACKAGE_DIR -mx1
+
+          New-Item -ItemType Directory -Force -Path 'release-files' | Out-Null
+          Move-Item -Force $env:PACKAGE_ZIP "release-files/$env:PACKAGE_ZIP"
+
+          Get-ChildItem 'release-files' -Filter '*.zip' | ForEach-Object {
+            $hash = Get-FileHash -Algorithm SHA256 $_.FullName
+            "$($hash.Hash.ToLowerInvariant())  $($_.Name)"
+          } | Set-Content -Encoding UTF8 'release-files/SHA256SUMS.txt'
+
+      - name: Publish GitHub release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.event_name == 'workflow_dispatch' && inputs.tag || github.ref_name }}
+          target_commitish: ${{ github.sha }}
+          draft: ${{ github.event_name == 'workflow_dispatch' && inputs.draft || false }}
+          prerelease: ${{ github.event_name == 'workflow_dispatch' && inputs.prerelease || false }}
+          files: |
+            release-files/*

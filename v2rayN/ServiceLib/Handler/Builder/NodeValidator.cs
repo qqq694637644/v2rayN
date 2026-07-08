@@ -14,7 +14,7 @@ public class NodeValidator
 {
     // Static validator rules
     private static readonly HashSet<string> SingboxUnsupportedTransports =
-        [nameof(ETransport.kcp), nameof(ETransport.xhttp)];
+        [nameof(ETransport.mkcp), nameof(ETransport.xhttp)];
 
     private static readonly HashSet<EConfigType> SingboxTransportSupportedProtocols =
         [EConfigType.VMess, EConfigType.VLESS, EConfigType.Trojan, EConfigType.Shadowsocks];

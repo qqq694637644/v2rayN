@@ -25,7 +25,7 @@ public class VmessQRCode
 
     public string net { get; set; } = string.Empty;
 
-    public string type { get; set; } = string.Empty;
+    public string? type { get; set; } = string.Empty;
 
     public string host { get; set; } = string.Empty;
 

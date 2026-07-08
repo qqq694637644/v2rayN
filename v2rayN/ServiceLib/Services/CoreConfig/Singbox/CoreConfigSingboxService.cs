@@ -21,7 +21,7 @@ public partial class CoreConfigSingboxService(CoreConfigContext context)
                 ret.Msg = ResUI.CheckServerSettings;
                 return ret;
             }
-            if (_node.GetNetwork() is nameof(ETransport.kcp) or nameof(ETransport.xhttp))
+            if (_node.GetNetwork() is nameof(ETransport.mkcp) or nameof(ETransport.xhttp))
             {
                 ret.Msg = ResUI.Incorrectconfiguration + $" - {_node.GetNetwork()}";
                 return ret;
@@ -196,7 +196,7 @@ public partial class CoreConfigSingboxService(CoreConfigContext context)
                 ret.Msg = ResUI.CheckServerSettings;
                 return ret;
             }
-            if (_node.GetNetwork() is nameof(ETransport.kcp) or nameof(ETransport.xhttp))
+            if (_node.GetNetwork() is nameof(ETransport.mkcp) or nameof(ETransport.xhttp))
             {
                 ret.Msg = ResUI.Incorrectconfiguration + $" - {_node.GetNetwork()}";
                 return ret;

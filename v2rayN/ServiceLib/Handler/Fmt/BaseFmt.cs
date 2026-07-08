@@ -118,12 +118,7 @@ public class BaseFmt
                 }
                 break;
 
-            case nameof(ETransport.kcp):
-                dicQuery.Add("headerType", transport.KcpHeaderType.IsNotEmpty() ? transport.KcpHeaderType : Global.None);
-                if (transport.KcpSeed.IsNotEmpty())
-                {
-                    dicQuery.Add("seed", UrlEncodeSafe(transport.KcpSeed));
-                }
+            case nameof(ETransport.mkcp):
                 if (transport.KcpMtu > 0)
                 {
                     dicQuery.Add("mtu", transport.KcpMtu.ToString());
@@ -270,9 +265,18 @@ public class BaseFmt
         {
             net = nameof(ETransport.raw);
         }
+        else if (net == "kcp")
+        {
+            throw new InvalidOperationException("Legacy kcp transport is not supported by this Xray-core 26.3.27 profile. Use mkcp without headerType or seed.");
+        }
         if (!Global.Networks.Contains(net))
         {
             net = nameof(ETransport.raw);
+        }
+        if (net == nameof(ETransport.mkcp)
+            && (HasQueryKey(query, "headerType") || HasQueryKey(query, "seed") || HasQueryKey(query, "host") || HasQueryKey(query, "path")))
+        {
+            throw new InvalidOperationException("mkcp no longer accepts legacy headerType, seed, host, or path fields.");
         }
 
         item.Network = net;
@@ -287,14 +291,11 @@ public class BaseFmt
                 };
                 break;
 
-            case nameof(ETransport.kcp):
-                var kcpSeed = GetQueryDecoded(query, "seed");
+            case nameof(ETransport.mkcp):
                 var kcpMtuStr = GetQueryValue(query, "mtu");
                 var kcpMtu = int.TryParse(kcpMtuStr, out var mtu) ? mtu : 0;
                 transport = transport with
                 {
-                    KcpHeaderType = GetQueryValue(query, "headerType", Global.None),
-                    KcpSeed = kcpSeed,
                     KcpMtu = kcpMtu > 0 ? mtu : null,
                 };
                 break;
@@ -382,5 +383,10 @@ public class BaseFmt
     protected static string GetQueryDecoded(NameValueCollection query, string key, string defaultValue = "")
     {
         return Utils.UrlDecode(GetQueryValue(query, key, defaultValue));
+    }
+
+    private static bool HasQueryKey(NameValueCollection query, string key)
+    {
+        return query.AllKeys.Any(k => string.Equals(k, key, StringComparison.OrdinalIgnoreCase));
     }
 }

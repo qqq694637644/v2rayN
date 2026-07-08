@@ -13,7 +13,5 @@ public record TransportExtraItem
     public string? GrpcServiceName { get; init; }
     public string? GrpcMode { get; init; }
 
-    public string? KcpHeaderType { get; init; }
-    public string? KcpSeed { get; init; }
     public int? KcpMtu { get; init; }
 }

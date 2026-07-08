@@ -52,11 +52,20 @@ public class ProfileItem
 
     public string GetNetwork()
     {
-        if (Network.IsNullOrEmpty() || !Global.Networks.Contains(Network))
+        var network = Network.TrimEx();
+        if (network.IsNullOrEmpty())
         {
             return Global.DefaultNetwork;
         }
-        return Network.TrimEx();
+        if (network == "kcp")
+        {
+            throw new InvalidOperationException("Legacy kcp transport is not supported by this Xray-core 26.3.27 profile. Use mkcp without headerType or seed.");
+        }
+        if (!Global.Networks.Contains(network))
+        {
+            throw new InvalidOperationException($"Unsupported transport network: {network}");
+        }
+        return network;
     }
 
     public bool IsComplex()
@@ -170,13 +179,13 @@ public class ProfileItem
     public string Username { get; set; }
     public string Network { get; set; }
 
-    [Obsolete("Use TransportExtra.RawHeaderType/XhttpMode/GrpcMode/KcpHeaderType instead.")]
+    [Obsolete("Use TransportExtra.RawHeaderType/XhttpMode/GrpcMode instead.")]
     public string HeaderType { get; set; }
 
     [Obsolete("Use TransportExtra.Host/GrpcAuthority instead.")]
     public string RequestHost { get; set; }
 
-    [Obsolete("Use TransportExtra.Path/GrpcServiceName/KcpSeed instead.")]
+    [Obsolete("Use TransportExtra.Path/GrpcServiceName instead.")]
     public string Path { get; set; }
 
     public string StreamSecurity { get; set; }

@@ -114,12 +114,6 @@ public class AddServerViewModel : MyReactiveObject
     public string GrpcMode { get; set; }
 
     [Reactive]
-    public string KcpHeaderType { get; set; }
-
-    [Reactive]
-    public string KcpSeed { get; set; }
-
-    [Reactive]
     public int? KcpMtu { get; set; }
 
     public string TransportHeaderType
@@ -127,7 +121,6 @@ public class AddServerViewModel : MyReactiveObject
         get => SelectedSource.GetNetwork() switch
         {
             nameof(ETransport.raw) => RawHeaderType,
-            nameof(ETransport.kcp) => KcpHeaderType,
             nameof(ETransport.xhttp) => XhttpMode,
             nameof(ETransport.grpc) => GrpcMode,
             _ => string.Empty,
@@ -138,10 +131,6 @@ public class AddServerViewModel : MyReactiveObject
             {
                 case nameof(ETransport.raw):
                     RawHeaderType = value;
-                    break;
-
-                case nameof(ETransport.kcp):
-                    KcpHeaderType = value;
                     break;
 
                 case nameof(ETransport.xhttp):
@@ -190,7 +179,6 @@ public class AddServerViewModel : MyReactiveObject
     {
         get => SelectedSource.GetNetwork() switch
         {
-            nameof(ETransport.kcp) => KcpSeed,
             nameof(ETransport.ws) => Path,
             nameof(ETransport.httpupgrade) => Path,
             nameof(ETransport.xhttp) => Path,
@@ -201,10 +189,6 @@ public class AddServerViewModel : MyReactiveObject
         {
             switch (SelectedSource.GetNetwork())
             {
-                case nameof(ETransport.kcp):
-                    KcpSeed = value;
-                    break;
-
                 case nameof(ETransport.ws):
                 case nameof(ETransport.httpupgrade):
                 case nameof(ETransport.xhttp):
@@ -323,8 +307,6 @@ public class AddServerViewModel : MyReactiveObject
         GrpcAuthority = transport.GrpcAuthority ?? string.Empty;
         GrpcServiceName = transport.GrpcServiceName ?? string.Empty;
         GrpcMode = transport.GrpcMode.IsNullOrEmpty() ? Global.GrpcGunMode : transport.GrpcMode;
-        KcpHeaderType = transport.KcpHeaderType.IsNullOrEmpty() ? Global.None : transport.KcpHeaderType;
-        KcpSeed = transport.KcpSeed ?? string.Empty;
         KcpMtu = transport.KcpMtu;
     }
 
@@ -384,10 +366,18 @@ public class AddServerViewModel : MyReactiveObject
         SelectedSource.MuxEnabled = MuxEnabled;
         SelectedSource.Cert = Cert.IsNullOrEmpty() ? string.Empty : Cert;
         SelectedSource.CertSha = CertSha.IsNullOrEmpty() ? string.Empty : CertSha;
-        if (!Global.Networks.Contains(SelectedSource.Network))
+        var network = SelectedSource.Network.TrimEx();
+        if (network == "kcp")
         {
-            SelectedSource.Network = Global.DefaultNetwork;
+            NoticeManager.Instance.Enqueue("Legacy kcp transport is not supported by this Xray-core 26.3.27 profile. Use mkcp without headerType or seed.");
+            return;
         }
+        if (network.IsNotEmpty() && !Global.Networks.Contains(network))
+        {
+            NoticeManager.Instance.Enqueue($"Unsupported transport network: {network}");
+            return;
+        }
+        SelectedSource.Network = network.IsNullOrEmpty() ? Global.DefaultNetwork : network;
 
         var transport = new TransportExtraItem
         {
@@ -399,8 +389,6 @@ public class AddServerViewModel : MyReactiveObject
             GrpcAuthority = GrpcAuthority.NullIfEmpty(),
             GrpcServiceName = GrpcServiceName.NullIfEmpty(),
             GrpcMode = GrpcMode.NullIfEmpty(),
-            KcpHeaderType = KcpHeaderType.NullIfEmpty(),
-            KcpSeed = KcpSeed.NullIfEmpty(),
             KcpMtu = KcpMtu > 0 ? KcpMtu : null,
         };
 

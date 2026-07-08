@@ -328,7 +328,6 @@ public partial class CoreConfigV2rayService
             var transport = _node.GetTransportExtra();
             var host = string.Empty;
             var path = string.Empty;
-            var kcpSeed = string.Empty;
             var kcpMtu = 0;
             var headerType = string.Empty;
             var xhttpExtra = string.Empty;
@@ -340,9 +339,7 @@ public partial class CoreConfigV2rayService
                     headerType = transport.RawHeaderType?.TrimEx() ?? string.Empty;
                     break;
 
-                case nameof(ETransport.kcp):
-                    kcpSeed = transport.KcpSeed?.TrimEx() ?? string.Empty;
-                    headerType = transport.KcpHeaderType?.TrimEx() ?? string.Empty;
+                case nameof(ETransport.mkcp):
                     kcpMtu = transport.KcpMtu > 0 ? transport.KcpMtu!.Value : _config.KcpItem.Mtu;
                     break;
 
@@ -446,7 +443,7 @@ public partial class CoreConfigV2rayService
             //streamSettings
             switch (network)
             {
-                case nameof(ETransport.kcp):
+                case nameof(ETransport.mkcp):
                     KcpSettings4Ray kcpSettings = new()
                     {
                         mtu = kcpMtu,
@@ -456,37 +453,7 @@ public partial class CoreConfigV2rayService
                         cwndMultiplier = _config.KcpItem.CwndMultiplier,
                         maxSendingWindow = _config.KcpItem.MaxSendingWindow,
                     };
-
-                    var kcpFinalmask = new Finalmask4Ray();
-                    if (Global.KcpHeaderMaskMap.TryGetValue(headerType, out var header))
-                    {
-                        kcpFinalmask.udp =
-                        [
-                            new Mask4Ray
-                            {
-                                type = "mkcp-legacy",
-                                settings = new MaskSettings4Ray { header = header },
-                            }
-                        ];
-                    }
-                    kcpFinalmask.udp ??= [];
-                    if (kcpSeed.IsNullOrEmpty())
-                    {
-                        kcpFinalmask.udp.Add(new Mask4Ray
-                        {
-                            type = "mkcp-legacy",
-                        });
-                    }
-                    else
-                    {
-                        kcpFinalmask.udp.Add(new Mask4Ray
-                        {
-                            type = "mkcp-legacy",
-                            settings = new MaskSettings4Ray { value = kcpSeed },
-                        });
-                    }
                     streamSettings.kcpSettings = kcpSettings;
-                    streamSettings.finalmask = kcpFinalmask;
                     break;
                 //ws
                 case nameof(ETransport.ws):
