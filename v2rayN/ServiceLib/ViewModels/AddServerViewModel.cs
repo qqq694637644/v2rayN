@@ -116,6 +116,27 @@ public class AddServerViewModel : MyReactiveObject
     [Reactive]
     public int? KcpMtu { get; set; }
 
+    [Reactive]
+    public int? KcpTti { get; set; }
+
+    [Reactive]
+    public int? KcpUplinkCapacity { get; set; }
+
+    [Reactive]
+    public int? KcpDownlinkCapacity { get; set; }
+
+    [Reactive]
+    public bool KcpCongestion { get; set; }
+
+    [Reactive]
+    public int? KcpReadBufferSize { get; set; }
+
+    [Reactive]
+    public int? KcpWriteBufferSize { get; set; }
+
+    [Reactive]
+    public string KcpFinalMaskType { get; set; }
+
     public string TransportHeaderType
     {
         get => SelectedSource.GetNetwork() switch
@@ -307,7 +328,14 @@ public class AddServerViewModel : MyReactiveObject
         GrpcAuthority = transport.GrpcAuthority ?? string.Empty;
         GrpcServiceName = transport.GrpcServiceName ?? string.Empty;
         GrpcMode = transport.GrpcMode.IsNullOrEmpty() ? Global.GrpcGunMode : transport.GrpcMode;
-        KcpMtu = transport.KcpMtu;
+        KcpMtu = transport.KcpMtu ?? 1350;
+        KcpTti = transport.KcpTti ?? 20;
+        KcpUplinkCapacity = transport.KcpUplinkCapacity ?? 5;
+        KcpDownlinkCapacity = transport.KcpDownlinkCapacity ?? 20;
+        KcpCongestion = transport.KcpCongestion ?? false;
+        KcpReadBufferSize = transport.KcpReadBufferSize ?? 2;
+        KcpWriteBufferSize = transport.KcpWriteBufferSize ?? 2;
+        KcpFinalMaskType = ParseKcpFinalMaskType(SelectedSource.Finalmask);
     }
 
     private async Task SaveServerAsync()
@@ -390,7 +418,18 @@ public class AddServerViewModel : MyReactiveObject
             GrpcServiceName = GrpcServiceName.NullIfEmpty(),
             GrpcMode = GrpcMode.NullIfEmpty(),
             KcpMtu = KcpMtu > 0 ? KcpMtu : null,
+            KcpTti = KcpTti > 0 ? KcpTti : null,
+            KcpUplinkCapacity = KcpUplinkCapacity > 0 ? KcpUplinkCapacity : null,
+            KcpDownlinkCapacity = KcpDownlinkCapacity > 0 ? KcpDownlinkCapacity : null,
+            KcpCongestion = KcpCongestion ? true : null,
+            KcpReadBufferSize = KcpReadBufferSize > 0 ? KcpReadBufferSize : null,
+            KcpWriteBufferSize = KcpWriteBufferSize > 0 ? KcpWriteBufferSize : null,
         };
+
+        if (SelectedSource.GetNetwork() == nameof(ETransport.mkcp))
+        {
+            SelectedSource.Finalmask = BuildKcpFinalMask(KcpFinalMaskType);
+        }
 
         SelectedSource.SetProtocolExtra(SelectedSource.GetProtocolExtra() with
         {
@@ -428,6 +467,59 @@ public class AddServerViewModel : MyReactiveObject
         {
             NoticeManager.Instance.Enqueue(ResUI.OperationFailed);
         }
+    }
+
+    private static string ParseKcpFinalMaskType(string? finalmask)
+    {
+        if (finalmask.IsNullOrEmpty())
+        {
+            return Global.None;
+        }
+
+        var node = JsonUtils.ParseJson(finalmask) as JsonObject;
+        if (node?["udp"] is not JsonArray udp)
+        {
+            return Global.None;
+        }
+
+        foreach (var item in udp)
+        {
+            var type = item?["type"]?.GetValue<string>();
+            if (IsSupportedKcpFinalMaskType(type))
+            {
+                return type!;
+            }
+        }
+
+        return Global.None;
+    }
+
+    private static bool IsSupportedKcpFinalMaskType(string? type) => type switch
+    {
+        "header-srtp" or "header-utp" or "header-wechat" or "header-dtls" or "header-wireguard" => true,
+        _ => false,
+    };
+
+    private static string BuildKcpFinalMask(string? type)
+    {
+        if (!IsSupportedKcpFinalMaskType(type))
+        {
+            return string.Empty;
+        }
+
+        var finalmask = new JsonObject
+        {
+            ["udp"] = new JsonArray
+            {
+                new JsonObject
+                {
+                    ["type"] = type,
+                    ["settings"] = new JsonObject(),
+                },
+            },
+        };
+
+        return JsonUtils.Serialize(finalmask, true, true);
     }
 
     private void UpdateCertTip(string? errorMessage = null)

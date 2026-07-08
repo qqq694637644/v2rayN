@@ -894,7 +894,7 @@
                             x:Name="gridTransportKcp"
                             ColumnDefinitions="300,Auto"
                             IsVisible="False"
-                            RowDefinitions="Auto">
+                            RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto">
                             <TextBlock
                                 Grid.Row="0"
                                 Grid.Column="0"
@@ -908,6 +908,20 @@
                                 Width="200"
                                 Margin="{StaticResource Margin4}"
                                 HorizontalAlignment="Left" />
+                            <TextBlock Grid.Row="1" Grid.Column="0" Margin="{StaticResource Margin4}" VerticalAlignment="Center" Text="tti (ms)" />
+                            <TextBox x:Name="txtKcpTti" Grid.Row="1" Grid.Column="1" Width="200" Margin="{StaticResource Margin4}" HorizontalAlignment="Left" />
+                            <TextBlock Grid.Row="2" Grid.Column="0" Margin="{StaticResource Margin4}" VerticalAlignment="Center" Text="uplinkCapacity (MB/s)" />
+                            <TextBox x:Name="txtKcpUplinkCapacity" Grid.Row="2" Grid.Column="1" Width="200" Margin="{StaticResource Margin4}" HorizontalAlignment="Left" />
+                            <TextBlock Grid.Row="3" Grid.Column="0" Margin="{StaticResource Margin4}" VerticalAlignment="Center" Text="downlinkCapacity (MB/s)" />
+                            <TextBox x:Name="txtKcpDownlinkCapacity" Grid.Row="3" Grid.Column="1" Width="200" Margin="{StaticResource Margin4}" HorizontalAlignment="Left" />
+                            <TextBlock Grid.Row="4" Grid.Column="0" Margin="{StaticResource Margin4}" VerticalAlignment="Center" Text="congestion" />
+                            <ToggleSwitch x:Name="togKcpCongestion" Grid.Row="4" Grid.Column="1" Margin="{StaticResource Margin4}" HorizontalAlignment="Left" />
+                            <TextBlock Grid.Row="5" Grid.Column="0" Margin="{StaticResource Margin4}" VerticalAlignment="Center" Text="readBufferSize (MB)" />
+                            <TextBox x:Name="txtKcpReadBufferSize" Grid.Row="5" Grid.Column="1" Width="200" Margin="{StaticResource Margin4}" HorizontalAlignment="Left" />
+                            <TextBlock Grid.Row="6" Grid.Column="0" Margin="{StaticResource Margin4}" VerticalAlignment="Center" Text="writeBufferSize (MB)" />
+                            <TextBox x:Name="txtKcpWriteBufferSize" Grid.Row="6" Grid.Column="1" Width="200" Margin="{StaticResource Margin4}" HorizontalAlignment="Left" />
+                            <TextBlock Grid.Row="7" Grid.Column="0" Margin="{StaticResource Margin4}" VerticalAlignment="Center" Text="FinalMask UDP header" />
+                            <ComboBox x:Name="cmbKcpFinalMaskType" Grid.Row="7" Grid.Column="1" Width="220" Margin="{StaticResource Margin4}" />
                         </Grid>
 
                         <Grid

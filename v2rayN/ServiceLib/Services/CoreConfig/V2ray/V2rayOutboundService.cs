@@ -329,6 +329,12 @@ public partial class CoreConfigV2rayService
             var host = string.Empty;
             var path = string.Empty;
             var kcpMtu = 0;
+            var kcpTti = 20;
+            var kcpUplinkCapacity = 5;
+            var kcpDownlinkCapacity = 20;
+            var kcpCongestion = false;
+            var kcpReadBufferSize = 2;
+            var kcpWriteBufferSize = 2;
             var headerType = string.Empty;
             var xhttpExtra = string.Empty;
             switch (network)
@@ -340,7 +346,13 @@ public partial class CoreConfigV2rayService
                     break;
 
                 case nameof(ETransport.mkcp):
-                    kcpMtu = transport.KcpMtu > 0 ? transport.KcpMtu!.Value : _config.KcpItem.Mtu;
+                    kcpMtu = transport.KcpMtu > 0 ? transport.KcpMtu!.Value : 1350;
+                    kcpTti = transport.KcpTti > 0 ? transport.KcpTti!.Value : 20;
+                    kcpUplinkCapacity = transport.KcpUplinkCapacity > 0 ? transport.KcpUplinkCapacity!.Value : 5;
+                    kcpDownlinkCapacity = transport.KcpDownlinkCapacity > 0 ? transport.KcpDownlinkCapacity!.Value : 20;
+                    kcpCongestion = transport.KcpCongestion ?? false;
+                    kcpReadBufferSize = transport.KcpReadBufferSize > 0 ? transport.KcpReadBufferSize!.Value : 2;
+                    kcpWriteBufferSize = transport.KcpWriteBufferSize > 0 ? transport.KcpWriteBufferSize!.Value : 2;
                     break;
 
                 case nameof(ETransport.ws):
@@ -447,11 +459,12 @@ public partial class CoreConfigV2rayService
                     KcpSettings4Ray kcpSettings = new()
                     {
                         mtu = kcpMtu,
-                        tti = _config.KcpItem.Tti,
-                        uplinkCapacity = _config.KcpItem.UplinkCapacity,
-                        downlinkCapacity = _config.KcpItem.DownlinkCapacity,
-                        cwndMultiplier = _config.KcpItem.CwndMultiplier,
-                        maxSendingWindow = _config.KcpItem.MaxSendingWindow,
+                        tti = kcpTti,
+                        uplinkCapacity = kcpUplinkCapacity,
+                        downlinkCapacity = kcpDownlinkCapacity,
+                        congestion = kcpCongestion,
+                        readBufferSize = kcpReadBufferSize,
+                        writeBufferSize = kcpWriteBufferSize,
                     };
                     streamSettings.kcpSettings = kcpSettings;
                     break;

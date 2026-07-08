@@ -123,6 +123,30 @@ public class BaseFmt
                 {
                     dicQuery.Add("mtu", transport.KcpMtu.ToString());
                 }
+                if (transport.KcpTti > 0)
+                {
+                    dicQuery.Add("tti", transport.KcpTti.ToString());
+                }
+                if (transport.KcpUplinkCapacity > 0)
+                {
+                    dicQuery.Add("uplinkCapacity", transport.KcpUplinkCapacity.ToString());
+                }
+                if (transport.KcpDownlinkCapacity > 0)
+                {
+                    dicQuery.Add("downlinkCapacity", transport.KcpDownlinkCapacity.ToString());
+                }
+                if (transport.KcpCongestion == true)
+                {
+                    dicQuery.Add("congestion", "1");
+                }
+                if (transport.KcpReadBufferSize > 0)
+                {
+                    dicQuery.Add("readBufferSize", transport.KcpReadBufferSize.ToString());
+                }
+                if (transport.KcpWriteBufferSize > 0)
+                {
+                    dicQuery.Add("writeBufferSize", transport.KcpWriteBufferSize.ToString());
+                }
                 break;
 
             case nameof(ETransport.ws):
@@ -286,11 +310,15 @@ public class BaseFmt
                 break;
 
             case nameof(ETransport.mkcp):
-                var kcpMtuStr = GetQueryValue(query, "mtu");
-                var kcpMtu = int.TryParse(kcpMtuStr, out var mtu) ? mtu : 0;
                 transport = transport with
                 {
-                    KcpMtu = kcpMtu > 0 ? mtu : null,
+                    KcpMtu = GetQueryInt(query, "mtu"),
+                    KcpTti = GetQueryInt(query, "tti"),
+                    KcpUplinkCapacity = GetQueryInt(query, "uplinkCapacity"),
+                    KcpDownlinkCapacity = GetQueryInt(query, "downlinkCapacity"),
+                    KcpCongestion = GetQueryValue(query, "congestion") == "1" ? true : null,
+                    KcpReadBufferSize = GetQueryInt(query, "readBufferSize"),
+                    KcpWriteBufferSize = GetQueryInt(query, "writeBufferSize"),
                 };
                 break;
 
@@ -377,6 +405,11 @@ public class BaseFmt
     protected static string GetQueryDecoded(NameValueCollection query, string key, string defaultValue = "")
     {
         return Utils.UrlDecode(GetQueryValue(query, key, defaultValue));
+    }
+
+    protected static int? GetQueryInt(NameValueCollection query, string key)
+    {
+        return int.TryParse(GetQueryValue(query, key), out var value) && value > 0 ? value : null;
     }
 
     private static bool HasQueryKey(NameValueCollection query, string key)

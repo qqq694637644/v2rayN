@@ -14,4 +14,10 @@ public record TransportExtraItem
     public string? GrpcMode { get; init; }
 
     public int? KcpMtu { get; init; }
+    public int? KcpTti { get; init; }
+    public int? KcpUplinkCapacity { get; init; }
+    public int? KcpDownlinkCapacity { get; init; }
+    public bool? KcpCongestion { get; init; }
+    public int? KcpReadBufferSize { get; init; }
+    public int? KcpWriteBufferSize { get; init; }
 }
