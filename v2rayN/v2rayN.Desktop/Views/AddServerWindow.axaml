@@ -900,6 +900,7 @@
                                 Grid.Column="0"
                                 Margin="{StaticResource Margin4}"
                                 VerticalAlignment="Center"
+                                IsVisible="False"
                                 Text="{x:Static resx:ResUI.TransportHeaderType2}" />
                             <ComboBox
                                 x:Name="cmbHeaderTypeKcp"
@@ -907,6 +908,7 @@
                                 Grid.Column="1"
                                 Width="200"
                                 Margin="{StaticResource Margin4}"
+                                IsVisible="False"
                                 HorizontalAlignment="Left" />
                             <TextBlock
                                 Grid.Row="1"
@@ -926,6 +928,7 @@
                                 Grid.Column="0"
                                 Margin="{StaticResource Margin4}"
                                 VerticalAlignment="Center"
+                                IsVisible="False"
                                 Text="Seed" />
                             <TextBox
                                 x:Name="txtKcpSeed"
@@ -933,6 +936,7 @@
                                 Grid.Column="1"
                                 Width="400"
                                 Margin="{StaticResource Margin4}"
+                                IsVisible="False"
                                 HorizontalAlignment="Left" />
                         </Grid>
 

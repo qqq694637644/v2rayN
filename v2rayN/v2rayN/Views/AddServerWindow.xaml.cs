@@ -333,7 +333,7 @@ public partial class AddServerWindow
                 gridTransportRaw.Visibility = Visibility.Visible;
                 break;
 
-            case nameof(ETransport.kcp):
+            case nameof(ETransport.mkcp):
                 gridTransportKcp.Visibility = Visibility.Visible;
                 break;
 

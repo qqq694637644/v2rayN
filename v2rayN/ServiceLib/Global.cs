@@ -319,7 +319,7 @@ public class Global
     [
         "raw",
         "xhttp",
-        "kcp",
+        "mkcp",
         "grpc",
         "ws",
         "httpupgrade"

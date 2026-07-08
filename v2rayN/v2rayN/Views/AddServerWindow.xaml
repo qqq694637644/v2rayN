@@ -1164,6 +1164,7 @@
                                 Grid.Column="0"
                                 Margin="{StaticResource Margin4}"
                                 VerticalAlignment="Center"
+                                Visibility="Collapsed"
                                 Style="{StaticResource ToolbarTextBlock}"
                                 Text="{x:Static resx:ResUI.TransportHeaderType2}" />
                             <ComboBox
@@ -1173,6 +1174,7 @@
                                 Width="200"
                                 Margin="{StaticResource Margin4}"
                                 HorizontalAlignment="Left"
+                                Visibility="Collapsed"
                                 Style="{StaticResource DefComboBox}" />
                             <TextBlock
                                 Grid.Row="1"
@@ -1194,6 +1196,7 @@
                                 Grid.Column="0"
                                 Margin="{StaticResource Margin4}"
                                 VerticalAlignment="Center"
+                                Visibility="Collapsed"
                                 Style="{StaticResource ToolbarTextBlock}"
                                 Text="Seed" />
                             <TextBox
@@ -1203,6 +1206,7 @@
                                 Width="400"
                                 Margin="{StaticResource Margin4}"
                                 HorizontalAlignment="Left"
+                                Visibility="Collapsed"
                                 Style="{StaticResource DefTextBox}" />
                         </Grid>
 

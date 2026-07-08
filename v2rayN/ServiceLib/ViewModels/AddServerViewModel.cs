@@ -127,7 +127,6 @@ public class AddServerViewModel : MyReactiveObject
         get => SelectedSource.GetNetwork() switch
         {
             nameof(ETransport.raw) => RawHeaderType,
-            nameof(ETransport.kcp) => KcpHeaderType,
             nameof(ETransport.xhttp) => XhttpMode,
             nameof(ETransport.grpc) => GrpcMode,
             _ => string.Empty,
@@ -138,10 +137,6 @@ public class AddServerViewModel : MyReactiveObject
             {
                 case nameof(ETransport.raw):
                     RawHeaderType = value;
-                    break;
-
-                case nameof(ETransport.kcp):
-                    KcpHeaderType = value;
                     break;
 
                 case nameof(ETransport.xhttp):
@@ -190,7 +185,6 @@ public class AddServerViewModel : MyReactiveObject
     {
         get => SelectedSource.GetNetwork() switch
         {
-            nameof(ETransport.kcp) => KcpSeed,
             nameof(ETransport.ws) => Path,
             nameof(ETransport.httpupgrade) => Path,
             nameof(ETransport.xhttp) => Path,
@@ -201,10 +195,6 @@ public class AddServerViewModel : MyReactiveObject
         {
             switch (SelectedSource.GetNetwork())
             {
-                case nameof(ETransport.kcp):
-                    KcpSeed = value;
-                    break;
-
                 case nameof(ETransport.ws):
                 case nameof(ETransport.httpupgrade):
                 case nameof(ETransport.xhttp):
@@ -285,6 +275,10 @@ public class AddServerViewModel : MyReactiveObject
             SelectedSource = JsonUtils.DeepCopy(profileItem);
         }
         CoreType = SelectedSource?.CoreType?.ToString();
+        if (SelectedSource?.Network == nameof(ETransport.kcp))
+        {
+            SelectedSource.Network = nameof(ETransport.mkcp);
+        }
         AllowInsecure = SelectedSource?.GetAllowInsecure() == true;
         MuxEnabled = SelectedSource?.MuxEnabled == true;
         Cert = SelectedSource?.Cert ?? string.Empty;
@@ -380,6 +374,10 @@ public class AddServerViewModel : MyReactiveObject
             }
         }
         SelectedSource.CoreType = CoreType.IsNullOrEmpty() ? null : Enum.Parse<ECoreType>(CoreType);
+        if (SelectedSource.Network == nameof(ETransport.kcp))
+        {
+            SelectedSource.Network = nameof(ETransport.mkcp);
+        }
         SelectedSource.AllowInsecure = AllowInsecure ? Global.StringTrue : Global.StringFalse;
         SelectedSource.MuxEnabled = MuxEnabled;
         SelectedSource.Cert = Cert.IsNullOrEmpty() ? string.Empty : Cert;
@@ -399,8 +397,8 @@ public class AddServerViewModel : MyReactiveObject
             GrpcAuthority = GrpcAuthority.NullIfEmpty(),
             GrpcServiceName = GrpcServiceName.NullIfEmpty(),
             GrpcMode = GrpcMode.NullIfEmpty(),
-            KcpHeaderType = KcpHeaderType.NullIfEmpty(),
-            KcpSeed = KcpSeed.NullIfEmpty(),
+            KcpHeaderType = null,
+            KcpSeed = null,
             KcpMtu = KcpMtu > 0 ? KcpMtu : null,
         };
 

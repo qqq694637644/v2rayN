@@ -52,6 +52,10 @@ public class ProfileItem
 
     public string GetNetwork()
     {
+        if (Network == nameof(ETransport.kcp))
+        {
+            return nameof(ETransport.mkcp);
+        }
         if (Network.IsNullOrEmpty() || !Global.Networks.Contains(Network))
         {
             return Global.DefaultNetwork;

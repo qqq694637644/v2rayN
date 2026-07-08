@@ -333,7 +333,7 @@ public partial class AddServerWindow : WindowBase<AddServerViewModel>
                 gridTransportRaw.IsVisible = true;
                 break;
 
-            case nameof(ETransport.kcp):
+            case nameof(ETransport.mkcp):
                 gridTransportKcp.IsVisible = true;
                 break;
 

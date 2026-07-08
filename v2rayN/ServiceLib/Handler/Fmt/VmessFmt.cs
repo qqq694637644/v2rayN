@@ -34,11 +34,10 @@ public class VmessFmt : BaseFmt
             id = item.Password,
             aid = int.TryParse(item.GetProtocolExtra()?.AlterId, out var result) ? result : 0,
             scy = item.GetProtocolExtra().VmessSecurity ?? "",
-            net = item.GetNetwork() == nameof(ETransport.raw) ? Global.RawNetworkAlias : item.Network,
+            net = item.GetNetwork() == nameof(ETransport.raw) ? Global.RawNetworkAlias : item.GetNetwork(),
             type = item.GetNetwork() switch
             {
                 nameof(ETransport.raw) => item.GetTransportExtra().RawHeaderType,
-                nameof(ETransport.kcp) => item.GetTransportExtra().KcpHeaderType,
                 nameof(ETransport.xhttp) => item.GetTransportExtra().XhttpMode,
                 nameof(ETransport.grpc) => item.GetTransportExtra().GrpcMode,
                 _ => Global.None,
@@ -55,7 +54,6 @@ public class VmessFmt : BaseFmt
             path = item.GetNetwork() switch
             {
                 nameof(ETransport.raw) => item.GetTransportExtra().Path,
-                nameof(ETransport.kcp) => item.GetTransportExtra().KcpSeed,
                 nameof(ETransport.ws) => item.GetTransportExtra().Path,
                 nameof(ETransport.httpupgrade) => item.GetTransportExtra().Path,
                 nameof(ETransport.xhttp) => item.GetTransportExtra().Path,
@@ -114,14 +112,18 @@ public class VmessFmt : BaseFmt
         });
         if (vmessQRCode.net.IsNotEmpty())
         {
-            item.Network = vmessQRCode.net == Global.RawNetworkAlias ? nameof(ETransport.raw) : vmessQRCode.net;
+            item.Network = vmessQRCode.net switch
+            {
+                Global.RawNetworkAlias => nameof(ETransport.raw),
+                nameof(ETransport.kcp) => nameof(ETransport.mkcp),
+                _ => vmessQRCode.net,
+            };
         }
         if (vmessQRCode.type.IsNotEmpty())
         {
             transport = item.GetNetwork() switch
             {
                 nameof(ETransport.raw) => transport with { RawHeaderType = vmessQRCode.type },
-                nameof(ETransport.kcp) => transport with { KcpHeaderType = vmessQRCode.type },
                 nameof(ETransport.xhttp) => transport with { XhttpMode = vmessQRCode.type },
                 nameof(ETransport.grpc) => transport with { GrpcMode = vmessQRCode.type },
                 _ => transport,
@@ -130,7 +132,6 @@ public class VmessFmt : BaseFmt
         transport = item.GetNetwork() switch
         {
             nameof(ETransport.raw) => transport with { Host = Utils.ToString(vmessQRCode.host), Path = Utils.ToString(vmessQRCode.path) },
-            nameof(ETransport.kcp) => transport with { KcpSeed = Utils.ToString(vmessQRCode.path) },
             nameof(ETransport.ws) => transport with { Host = Utils.ToString(vmessQRCode.host), Path = Utils.ToString(vmessQRCode.path) },
             nameof(ETransport.httpupgrade) => transport with { Host = Utils.ToString(vmessQRCode.host), Path = Utils.ToString(vmessQRCode.path) },
             nameof(ETransport.xhttp) => transport with { Host = Utils.ToString(vmessQRCode.host), Path = Utils.ToString(vmessQRCode.path) },

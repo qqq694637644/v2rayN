@@ -426,11 +426,7 @@ public sealed class AppManager
                             break;
 
                         case nameof(ETransport.kcp):
-                            transport = transport with
-                            {
-                                KcpHeaderType = item.HeaderType.NullIfEmpty(),
-                                KcpSeed = item.Path.NullIfEmpty(),
-                            };
+                            item.Network = nameof(ETransport.mkcp);
                             break;
 
                         default:
