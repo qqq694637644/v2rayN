@@ -659,7 +659,7 @@ public partial class CoreConfigV2rayService
         }
     }
 
-    private static Finalmask4Ray BuildMkcpFinalmask(string? headerType, string? seed)
+    private static Finalmask4Ray? BuildMkcpFinalmask(string? headerType, string? seed)
     {
         var udp = new List<Mask4Ray>();
         var headerMaskType = headerType?.TrimEx() switch
@@ -671,6 +671,12 @@ public partial class CoreConfigV2rayService
             "wireguard" => "header-wireguard",
             _ => string.Empty,
         };
+        var password = seed?.TrimEx() ?? string.Empty;
+
+        if (headerMaskType.IsNullOrEmpty() && password.IsNullOrEmpty())
+        {
+            return null;
+        }
 
         if (headerMaskType.IsNotEmpty())
         {
@@ -681,7 +687,7 @@ public partial class CoreConfigV2rayService
             });
         }
 
-        if (seed.IsNullOrEmpty())
+        if (password.IsNullOrEmpty())
         {
             udp.Add(new Mask4Ray
             {
@@ -696,7 +702,7 @@ public partial class CoreConfigV2rayService
                 type = "mkcp-aes128gcm",
                 settings = new MaskSettings4Ray
                 {
-                    password = seed.TrimEx(),
+                    password = password,
                 },
             });
         }
