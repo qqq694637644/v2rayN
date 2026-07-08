@@ -485,9 +485,18 @@ public class AddServerViewModel : MyReactiveObject
         foreach (var item in udp)
         {
             var type = item?["type"]?.GetValue<string>();
-            if (IsSupportedKcpFinalMaskType(type))
+            if (type == "mkcp-legacy")
             {
-                return type!;
+                var header = item?["settings"]?["header"]?.GetValue<string>();
+                if (IsSupportedKcpFinalMaskType(header))
+                {
+                    return header!;
+                }
+            }
+            var legacyHeader = type?.StartsWith("header-") == true ? type[7..] : type;
+            if (IsSupportedKcpFinalMaskType(legacyHeader))
+            {
+                return legacyHeader!;
             }
         }
 
@@ -496,7 +505,7 @@ public class AddServerViewModel : MyReactiveObject
 
     private static bool IsSupportedKcpFinalMaskType(string? type) => type switch
     {
-        "header-srtp" or "header-utp" or "header-wechat" or "header-dtls" or "header-wireguard" => true,
+        "srtp" or "utp" or "wechat" or "dtls" or "wireguard" => true,
         _ => false,
     };
 
@@ -513,8 +522,12 @@ public class AddServerViewModel : MyReactiveObject
             {
                 new JsonObject
                 {
-                    ["type"] = type,
-                    ["settings"] = new JsonObject(),
+                    ["type"] = "mkcp-legacy",
+                    ["settings"] = new JsonObject
+                    {
+                        ["header"] = type,
+                        ["value"] = string.Empty,
+                    },
                 },
             },
         };

@@ -29,7 +29,7 @@ public partial class AddServerWindow : WindowBase<AddServerViewModel>
         cmbHeaderTypeRaw.ItemsSource = new List<string> { Global.None, Global.RawHeaderHttp };
         cmbHeaderTypeXhttp.ItemsSource = Global.XhttpMode;
         cmbHeaderTypeGrpc.ItemsSource = new List<string> { Global.GrpcGunMode, Global.GrpcMultiMode };
-        cmbKcpFinalMaskType.ItemsSource = new List<string> { Global.None, "header-srtp", "header-utp", "header-wechat", "header-dtls", "header-wireguard" };
+        cmbKcpFinalMaskType.ItemsSource = new List<string> { Global.None, "srtp", "utp", "wechat", "dtls", "wireguard" };
 
         cmbFingerprint.ItemsSource = Global.Fingerprints;
         cmbFingerprint2.ItemsSource = Global.Fingerprints;
